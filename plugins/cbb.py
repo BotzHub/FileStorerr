@@ -10,6 +10,18 @@
 # All rights reserved.
 #
 
+# Don't Remove Credit @Tech_Shreyansh29, @MrGhostsx
+# Ask Doubt on telegram @ShreyanshSupport2
+#
+# Copyright (C) 2025 by MrGhostsx@Github, < https://github.com/TechyShreyansh>.
+#
+# This file is part of < https://github.com/TechyShreyansh > project,
+# and is released under the MIT License.
+# Please see < https://github.com/TechyShreyansh/blob/master/LICENSE >
+#
+# All rights reserved.
+#
+
 from pyrogram import Client 
 from bot import Bot
 from config import *
@@ -19,10 +31,13 @@ from database.database import *
 @Bot.on_callback_query()
 async def cb_handler(client: Bot, query: CallbackQuery):
     data = query.data
+    user = query.from_user
+    first_name = user.first_name or "User"
+    mention = user.mention  # This will handle the mention properly
 
     if data == "help":
         await query.message.edit_text(
-            text=HELP_TXT.format(first=query.from_user.first_name),
+            text=HELP_TXT.format(first=first_name, mention=mention),
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton('ʜᴏᴍᴇ', callback_data='start'),
@@ -32,7 +47,7 @@ async def cb_handler(client: Bot, query: CallbackQuery):
 
     elif data == "about":
         await query.message.edit_text(
-            text=ABOUT_TXT.format(first=query.from_user.first_name),
+            text=ABOUT_TXT.format(first=first_name, mention=mention),
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton('ʜᴏᴍᴇ', callback_data='start'),
@@ -42,7 +57,7 @@ async def cb_handler(client: Bot, query: CallbackQuery):
 
     elif data == "start":
         await query.message.edit_text(
-            text=START_MSG.format(first=query.from_user.first_name),
+            text=START_MSG.format(first=first_name, mention=mention),
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton("ʜᴇʟᴘ", callback_data='help'),
@@ -63,7 +78,7 @@ async def cb_handler(client: Bot, query: CallbackQuery):
             chat = await client.get_chat(cid)
             mode = await db.get_channel_mode(cid)
             status = "🟢 ᴏɴ" if mode == "on" else "🔴 ᴏғғ"
-            new_mode = "ᴏғғ" if mode == "on" else "on"
+            new_mode = "ᴏғғ" if mode == "on" else "ᴏɴ"
             buttons = [
                 [InlineKeyboardButton(f"ʀᴇǫ ᴍᴏᴅᴇ {'OFF' if mode == 'on' else 'ON'}", callback_data=f"rfs_toggle_{cid}_{new_mode}")],
                 [InlineKeyboardButton("‹ ʙᴀᴄᴋ", callback_data="fsub_back")]
@@ -71,7 +86,6 @@ async def cb_handler(client: Bot, query: CallbackQuery):
             await query.message.edit_text(
                 f"Channel: {chat.title}\nCurrent Force-Sub Mode: {status}",
                 reply_markup=InlineKeyboardMarkup(buttons)
-            )
         except Exception:
             await query.answer("Failed to fetch channel info", show_alert=True)
 
@@ -94,8 +108,7 @@ async def cb_handler(client: Bot, query: CallbackQuery):
         await query.message.edit_text(
             f"Channel: {chat.title}\nCurrent Force-Sub Mode: {status}",
             reply_markup=InlineKeyboardMarkup(buttons)
-        )
-
+    
     elif data == "fsub_back":
         channels = await db.show_channels()
         buttons = []
@@ -110,5 +123,4 @@ async def cb_handler(client: Bot, query: CallbackQuery):
 
         await query.message.edit_text(
             "sᴇʟᴇᴄᴛ ᴀ ᴄʜᴀɴɴᴇʟ ᴛᴏ ᴛᴏɢɢʟᴇ ɪᴛs ғᴏʀᴄᴇ-sᴜʙ ᴍᴏᴅᴇ:",
-            reply_markup=InlineKeyboardMarkup(buttons)
-        )
+            reply_markup=InlineKeyboardMarkup(buttons))
