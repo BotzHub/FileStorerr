@@ -53,9 +53,6 @@ async def cb_handler(client: Bot, query: CallbackQuery):
                      InlineKeyboardButton("ᴀʙᴏᴜᴛ", callback_data='about')]
                 ])
             )
-        except pyrogram.errors.MessageNotModified:
-            # Message is already showing this content
-            await query.answer("You're already on the home screen")
 
     elif data == "close":
         await query.message.delete()
