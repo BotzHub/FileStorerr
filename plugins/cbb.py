@@ -19,43 +19,38 @@ from database.database import *
 @Bot.on_callback_query()
 async def cb_handler(client: Bot, query: CallbackQuery):
     data = query.data
-
-    if data == "help":
-        await query.message.edit_text(
-            text=HELP_TXT.format(first=query.from_user.first_name),
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton('ʜᴏᴍᴇ', callback_data='start'),
-                 InlineKeyboardButton("ᴄʟᴏꜱᴇ", callback_data='close')]
-            ])
-        )
-
-    elif data == "about":
-        await query.message.edit_text(
-            text=ABOUT_TXT.format(first=query.from_user.first_name),
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton('ʜᴏᴍᴇ', callback_data='start'),
-                 InlineKeyboardButton('ᴄʟᴏꜱᴇ', callback_data='close')]
-            ])
-        )
-
-    elif data == "start":
-        try:
+    user = query.from_user
+    
+    try:
+        if data == "help":
             await query.message.edit_text(
-                text=START_MSG.format(
-                    first=query.from_user.first_name,
-                    mention=query.from_user.mention if '{mention}' in START_MSG else ''
-                ),
+                text=HELP_TXT.format(first=user.first_name),
+                disable_web_page_preview=True,
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton('ʜᴏᴍᴇ', callback_data='home'),
+                     InlineKeyboardButton("ᴄʟᴏꜱᴇ", callback_data='close')]
+                ])
+            )
+
+        elif data == "about":
+            await query.message.edit_text(
+                text=ABOUT_TXT.format(first=user.first_name),
+                disable_web_page_preview=True,
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton('ʜᴏᴍᴇ', callback_data='home'),
+                     InlineKeyboardButton('ᴄʟᴏꜱᴇ', callback_data='close')]
+                ])
+            )
+
+        elif data in ["start", "home"]:  # Handle both start and home
+            await query.message.edit_text(
+                text=START_MSG.format(first=user.first_name),
                 disable_web_page_preview=True,
                 reply_markup=InlineKeyboardMarkup([
                     [InlineKeyboardButton("ʜᴇʟᴘ", callback_data='help'),
                      InlineKeyboardButton("ᴀʙᴏᴜᴛ", callback_data='about')]
                 ])
             )
-        except pyrogram.errors.MessageNotModified:
-            # Message is already showing this content
-            await query.answer("You're already on the home screen")
 
     elif data == "close":
         await query.message.delete()
