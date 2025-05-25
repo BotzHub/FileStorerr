@@ -41,16 +41,21 @@ async def cb_handler(client: Bot, query: CallbackQuery):
         )
 
     elif data == "start":
-        await query.message.edit_text(
-           text=START_MSG.format(
-    first=query.from_user.first_name,
-               mention=query.from_user.mention)
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("ʜᴇʟᴘ", callback_data='help'),
-                 InlineKeyboardButton("ᴀʙᴏᴜᴛ", callback_data='about')]
-            ])
-        )
+        try:
+            await query.message.edit_text(
+                text=START_MSG.format(
+                    first=query.from_user.first_name,
+                    mention=query.from_user.mention if '{mention}' in START_MSG else ''
+                ),
+                disable_web_page_preview=True,
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("ʜᴇʟᴘ", callback_data='help'),
+                     InlineKeyboardButton("ᴀʙᴏᴜᴛ", callback_data='about')]
+                ])
+            )
+        except pyrogram.errors.MessageNotModified:
+            # Message is already showing this content
+            await query.answer("You're already on the home screen")
 
     elif data == "close":
         await query.message.delete()
