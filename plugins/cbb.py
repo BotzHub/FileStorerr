@@ -41,15 +41,18 @@ async def cb_handler(client: Bot, query: CallbackQuery):
         )
 
     elif data == "start":
-    mention = query.from_user.mention if query.from_user else "User"
+    first = query.from_user.first_name
+    mention = query.from_user.mention if query.from_user else first
+    
     await query.message.edit_text(
-        text=START_MSG.format(first=query.from_user.first_name, mention=mention),
+        text=START_MSG.format(first=first, mention=mention),
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton("ʜᴇʟᴘ", callback_data='help'),
              InlineKeyboardButton("ᴀʙᴏᴜᴛ", callback_data='about')]
         ])
     )
+
 
     elif data == "close":
         await query.message.delete()
