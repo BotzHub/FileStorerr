@@ -20,42 +20,35 @@ from database.database import *
 async def cb_handler(client: Bot, query: CallbackQuery):
     data = query.data
     user = query.from_user
-    mention = user.mention if user.mention else user.first_name
-    
+    first_name = user.first_name or "User"
+
     if data == "help":
         await query.message.edit_text(
-            text=HELP_TXT.format(first=user.first_name, mention=mention),
+            text=HELP_TXT,
             disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton('ʜᴏᴍᴇ', callback_data='start'),
-                        InlineKeyboardButton("ᴄʟᴏꜱᴇ", callback_data='close')
-                    ]
-                ]
-            )
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton('ʜᴏᴍᴇ', callback_data='start'),
+                 InlineKeyboardButton("ᴄʟᴏꜱᴇ", callback_data='close')]
+            ])
         )
     elif data == "about":
         await query.message.edit_text(
-            text=ABOUT_TXT.format(first=user.first_name, mention=mention),
+            text=ABOUT_TXT,
             disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [InlineKeyboardButton('ʜᴏᴍᴇ', callback_data='start'),
-                     InlineKeyboardButton('ᴄʟᴏꜱᴇ', callback_data='close')]
-                ]
-            )
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton('ʜᴏᴍᴇ', callback_data='start'),
+                 InlineKeyboardButton('ᴄʟᴏꜱᴇ', callback_data='close')]
+            ])
         )
     elif data == "start":
         await query.message.edit_text(
-            text=START_MSG.format(first=user.first_name, mention=mention),
+            text=START_MSG.format(first=first_name),
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton("ʜᴇʟᴘ", callback_data='help'),
                  InlineKeyboardButton("ᴀʙᴏᴜᴛ", callback_data='about')]
             ])
         )
-    
     elif data == "close":
         await query.message.delete()
         try:
@@ -69,7 +62,7 @@ async def cb_handler(client: Bot, query: CallbackQuery):
             chat = await client.get_chat(cid)
             mode = await db.get_channel_mode(cid)
             status = "🟢 ᴏɴ" if mode == "on" else "🔴 ᴏғғ"
-            new_mode = "ᴏғғ" if mode == "on" else "on"
+            new_mode = "off" if mode == "on" else "on"
             buttons = [
                 [InlineKeyboardButton(f"ʀᴇǫ ᴍᴏᴅᴇ {'OFF' if mode == 'on' else 'ON'}", callback_data=f"rfs_toggle_{cid}_{new_mode}")],
                 [InlineKeyboardButton("‹ ʙᴀᴄᴋ", callback_data="fsub_back")]
