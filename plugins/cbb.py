@@ -41,18 +41,14 @@ async def cb_handler(client: Bot, query: CallbackQuery):
         )
 
     elif data == "start":
-    first = query.from_user.first_name
-    mention = query.from_user.mention if query.from_user else first
-    
-    await query.message.edit_text(
-        text=START_MSG.format(first=first, mention=mention),
-        disable_web_page_preview=True,
-        reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton("ʜᴇʟᴘ", callback_data='help'),
-             InlineKeyboardButton("ᴀʙᴏᴜᴛ", callback_data='about')]
-        ])
-    )
-
+        await query.message.edit_text(
+            text=START_MSG.format(first=query.from_user.first_name),
+            disable_web_page_preview=True,
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("ʜᴇʟᴘ", callback_data='help'),
+                 InlineKeyboardButton("ᴀʙᴏᴜᴛ", callback_data='about')]
+            ])
+        )
 
     elif data == "close":
         await query.message.delete()
@@ -114,5 +110,4 @@ async def cb_handler(client: Bot, query: CallbackQuery):
 
         await query.message.edit_text(
             "sᴇʟᴇᴄᴛ ᴀ ᴄʜᴀɴɴᴇʟ ᴛᴏ ᴛᴏɢɢʟᴇ ɪᴛs ғᴏʀᴄᴇ-sᴜʙ ᴍᴏᴅᴇ:",
-            reply_markup=InlineKeyboardMarkup(buttons)
-        )
+            reply_markup=InlineKeyboardMarkup(buttons))
